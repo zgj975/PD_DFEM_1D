@@ -1,0 +1,322 @@
+﻿Build started 2019-07-25 21:46:27.
+     1>Project "D:\Yang\MyJob\Projects\EGQC\PD\PD-Code\PDIGA2d\umf\umf_demo\umf_demo.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Programs\msvc2012\VC\bin\CL.exe /c /I..\UMFPACK\Include /I..\amd\include /I..\SuiteSparse_config /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D NBLAS /D NCHOLMOD /D _MBCS /Gm- /EHsc /MT /GS /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Release\umf_demo.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         D:\Programs\msvc2012\VC\bin\CL.exe /c /I..\UMFPACK\Include /I..\amd\include /I..\SuiteSparse_config /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D NBLAS /D NCHOLMOD /D _MBCS /Gm- /EHsc /MT /GS /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt ..\Amd\Source\amd_1.c ..\Amd\Source\amd_2.c ..\Amd\Source\amd_aat.c ..\Amd\Source\amd_control.c ..\Amd\Source\amd_defaults.c ..\Amd\Source\amd_dump.c ..\Amd\Source\amd_global.c ..\Amd\Source\amd_info.c ..\Amd\Source\amd_order.c ..\Amd\Source\amd_post_tree.c ..\Amd\Source\amd_postorder.c ..\Amd\Source\amd_preprocess.c ..\Amd\Source\amd_valid.c ..\SuiteSparse_config\SuiteSparse_config.c ..\Umfpack\Source\umf_analyze.c ..\Umfpack\Source\umf_apply_order.c ..\Umfpack\Source\umf_assemble.c ..\Umfpack\Source\umf_blas3_update.c ..\Umfpack\Source\umf_build_tuples.c ..\Umfpack\Source\umf_cholmod.c ..\Umfpack\Source\umf_colamd.c ..\Umfpack\Source\umf_create_element.c ..\Umfpack\Source\umf_dump.c ..\Umfpack\Source\umf_extend_front.c ..\Umfpack\Source\umf_free.c ..\Umfpack\Source\umf_fsize.c ..\Umfpack\Source\umf_garbage_collection.c ..\Umfpack\Source\umf_get_memory.c ..\Umfpack\Source\umf_grow_front.c ..\Umfpack\Source\umf_init_front.c ..\Umfpack\Source\umf_is_permutation.c ..\Umfpack\Source\umf_kernel.c ..\Umfpack\Source\umf_kernel_init.c ..\Umfpack\Source\umf_kernel_wrapup.c ..\Umfpack\Source\umf_local_search.c ..\Umfpack\Source\umf_lsolve.c ..\Umfpack\Source\umf_ltsolve.c ..\Umfpack\Source\umf_malloc.c ..\Umfpack\Source\umf_mem_alloc_element.c ..\Umfpack\Source\umf_mem_alloc_head_block.c ..\Umfpack\Source\umf_mem_alloc_tail_block.c ..\Umfpack\Source\umf_mem_free_tail_block.c ..\Umfpack\Source\umf_mem_init_memoryspace.c ..\Umfpack\Source\umf_multicompile.c ..\Umfpack\Source\umf_realloc.c ..\Umfpack\Source\umf_report_perm.c ..\Umfpack\Source\umf_report_vector.c ..\Umfpack\Source\umf_row_search.c ..\Umfpack\Source\umf_scale.c ..\Umfpack\Source\umf_scale_column.c ..\Umfpack\Source\umf_set_stats.c ..\Umfpack\Source\umf_singletons.c ..\Umfpack\Source\umf_solve.c ..\Umfpack\Source\umf_start_front.c ..\Umfpack\Source\umf_store_lu.c ..\Umfpack\Source\umf_symbolic_usage.c ..\Umfpack\Source\umf_transpose.c ..\Umfpack\Source\umf_triplet.c ..\Umfpack\Source\umf_tuple_lengths.c ..\Umfpack\Source\umf_usolve.c ..\Umfpack\Source\umf_utsolve.c ..\Umfpack\Source\umf_valid_numeric.c ..\Umfpack\Source\umf_valid_symbolic.c ..\Umfpack\Source\umfpack_col_to_triplet.c ..\Umfpack\Source\umfpack_defaults.c ..\Umfpack\Source\umfpack_free_numeric.c ..\Umfpack\Source\umfpack_free_symbolic.c ..\Umfpack\Source\umfpack_get_determinant.c ..\Umfpack\Source\umfpack_get_lunz.c ..\Umfpack\Source\umfpack_get_numeric.c ..\Umfpack\Source\umfpack_get_symbolic.c ..\Umfpack\Source\umfpack_global.c ..\Umfpack\Source\umfpack_load_numeric.c ..\Umfpack\Source\umfpack_load_symbolic.c ..\Umfpack\Source\umfpack_numeric.c ..\Umfpack\Source\umfpack_qsymbolic.c ..\Umfpack\Source\umfpack_report_control.c ..\Umfpack\Source\umfpack_report_info.c ..\Umfpack\Source\umfpack_report_matrix.c ..\Umfpack\Source\umfpack_report_numeric.c ..\Umfpack\Source\umfpack_report_perm.c ..\Umfpack\Source\umfpack_report_status.c ..\Umfpack\Source\umfpack_report_symbolic.c ..\Umfpack\Source\umfpack_report_triplet.c ..\Umfpack\Source\umfpack_report_vector.c ..\Umfpack\Source\umfpack_save_numeric.c ..\Umfpack\Source\umfpack_save_symbolic.c ..\Umfpack\Source\umfpack_scale.c ..\Umfpack\Source\umfpack_solve.c ..\Umfpack\Source\umfpack_symbolic.c ..\Umfpack\Source\umfpack_tictoc.c ..\Umfpack\Source\umfpack_timer.c ..\Umfpack\Source\umfpack_transpose.c ..\Umfpack\Source\umfpack_triplet_to_col.c ..\SuiteSparse_config\xerbla\xerbla.c
+         amd_1.c
+         amd_2.c
+     1>..\Amd\Source\amd_2.c(603): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         amd_aat.c
+         amd_control.c
+         amd_defaults.c
+         amd_dump.c
+         amd_global.c
+         amd_info.c
+         amd_order.c
+         amd_post_tree.c
+         amd_postorder.c
+         amd_preprocess.c
+         amd_valid.c
+         SuiteSparse_config.c
+         umf_analyze.c
+     1>..\Umfpack\Source\umf_analyze.c(93): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_analyze.c(580): warning C4068: unknown pragma
+         umf_apply_order.c
+         umf_assemble.c
+     1>..\Umfpack\Source\umf_assemble.c(115): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(135): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(266): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(282): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(642): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(663): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(689): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(736): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(761): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(820): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(838): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(884): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(968): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_assemble.c(995): warning C4068: unknown pragma
+         umf_blas3_update.c
+     1>..\Umfpack\Source\umf_blas3_update.c(80): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_blas3_update.c(116): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_blas3_update.c(151): warning C4068: unknown pragma
+         umf_build_tuples.c
+         umf_cholmod.c
+         Generating Code...
+         Compiling...
+         umf_colamd.c
+         umf_create_element.c
+     1>..\Umfpack\Source\umf_create_element.c(30): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(99): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(112): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(136): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(157): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(175): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(184): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(286): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_create_element.c(291): warning C4068: unknown pragma
+         umf_dump.c
+         umf_extend_front.c
+     1>..\Umfpack\Source\umf_extend_front.c(34): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_extend_front.c(48): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_extend_front.c(62): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_extend_front.c(76): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_extend_front.c(129): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umf_extend_front.c(130): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         umf_free.c
+         umf_fsize.c
+         umf_garbage_collection.c
+         umf_get_memory.c
+         umf_grow_front.c
+     1>..\Umfpack\Source\umf_grow_front.c(116): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umf_grow_front.c(117): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umf_grow_front.c(189): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umf_grow_front.c(190): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         umf_init_front.c
+     1>..\Umfpack\Source\umf_init_front.c(67): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umf_init_front.c(68): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         umf_is_permutation.c
+         umf_kernel.c
+         umf_kernel_init.c
+         umf_kernel_wrapup.c
+         umf_local_search.c
+     1>..\Umfpack\Source\umf_local_search.c(487): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_local_search.c(521): warning C4068: unknown pragma
+         umf_lsolve.c
+         umf_ltsolve.c
+         umf_malloc.c
+         umf_mem_alloc_element.c
+         umf_mem_alloc_head_block.c
+         Generating Code...
+         Compiling...
+         umf_mem_alloc_tail_block.c
+         umf_mem_free_tail_block.c
+         umf_mem_init_memoryspace.c
+         umf_multicompile.c
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(115): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(135): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(266): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(282): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(642): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(663): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(689): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(736): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(761): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(820): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(838): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(884): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(968): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umf_assemble.c(995): warning C4068: unknown pragma
+     1>d:\yang\myjob\projects\egqc\pd\pd-code\pdiga2d\umf\umfpack\source\umfpack_solve.c(102): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umf_realloc.c
+         umf_report_perm.c
+         umf_report_vector.c
+         umf_row_search.c
+         umf_scale.c
+         umf_scale_column.c
+     1>..\Umfpack\Source\umf_scale_column.c(33): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_scale_column.c(160): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_scale_column.c(175): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_scale_column.c(235): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_scale_column.c(249): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_scale_column.c(261): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_scale_column.c(304): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umf_scale_column.c(318): warning C4068: unknown pragma
+         umf_set_stats.c
+         umf_singletons.c
+         umf_solve.c
+         umf_start_front.c
+     1>..\Umfpack\Source\umf_start_front.c(161): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umf_start_front.c(173): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         umf_store_lu.c
+         umf_symbolic_usage.c
+         umf_transpose.c
+         umf_triplet.c
+         umf_tuple_lengths.c
+         umf_usolve.c
+         Generating Code...
+         Compiling...
+         umf_utsolve.c
+         umf_valid_numeric.c
+         umf_valid_symbolic.c
+         umfpack_col_to_triplet.c
+         umfpack_defaults.c
+         umfpack_free_numeric.c
+         umfpack_free_symbolic.c
+         umfpack_get_determinant.c
+         umfpack_get_lunz.c
+         umfpack_get_numeric.c
+     1>..\Umfpack\Source\umfpack_get_numeric.c(366): warning C4068: unknown pragma
+     1>..\Umfpack\Source\umfpack_get_numeric.c(372): warning C4068: unknown pragma
+         umfpack_get_symbolic.c
+         umfpack_global.c
+         umfpack_load_numeric.c
+     1>..\Umfpack\Source\umfpack_load_numeric.c(71): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 D:\Programs\msvc2012\VC\include\stdio.h(218) : see declaration of 'fopen'
+         umfpack_load_symbolic.c
+     1>..\Umfpack\Source\umfpack_load_symbolic.c(71): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 D:\Programs\msvc2012\VC\include\stdio.h(218) : see declaration of 'fopen'
+         umfpack_numeric.c
+     1>..\Umfpack\Source\umfpack_numeric.c(118): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_qsymbolic.c
+     1>..\Umfpack\Source\umfpack_qsymbolic.c(480): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_qsymbolic.c(749): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_qsymbolic.c(750): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_qsymbolic.c(752): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_qsymbolic.c(759): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_qsymbolic.c(762): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_qsymbolic.c(925): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         umfpack_report_control.c
+     1>..\Umfpack\Source\umfpack_report_control.c(27): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(99): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(108): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(140): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(180): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(203): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(213): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(271): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_control.c(305): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+         umfpack_report_info.c
+     1>..\Umfpack\Source\umfpack_report_info.c(90): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_info.c(192): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+     1>..\Umfpack\Source\umfpack_report_info.c(283): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_report_matrix.c
+     1>..\Umfpack\Source\umfpack_report_matrix.c(42): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_report_numeric.c
+     1>..\Umfpack\Source\umfpack_report_numeric.c(57): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         Generating Code...
+         Compiling...
+         umfpack_report_perm.c
+     1>..\Umfpack\Source\umfpack_report_perm.c(32): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_report_status.c
+     1>..\Umfpack\Source\umfpack_report_status.c(29): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_report_symbolic.c
+     1>..\Umfpack\Source\umfpack_report_symbolic.c(38): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_report_triplet.c
+     1>..\Umfpack\Source\umfpack_report_triplet.c(37): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_report_vector.c
+     1>..\Umfpack\Source\umfpack_report_vector.c(34): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_save_numeric.c
+     1>..\Umfpack\Source\umfpack_save_numeric.c(61): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 D:\Programs\msvc2012\VC\include\stdio.h(218) : see declaration of 'fopen'
+         umfpack_save_symbolic.c
+     1>..\Umfpack\Source\umfpack_save_symbolic.c(61): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 D:\Programs\msvc2012\VC\include\stdio.h(218) : see declaration of 'fopen'
+         umfpack_scale.c
+         umfpack_solve.c
+     1>..\Umfpack\Source\umfpack_solve.c(102): warning C4244: '=' : conversion from 'const double' to 'int', possible loss of data
+         umfpack_symbolic.c
+         umfpack_tictoc.c
+         umfpack_timer.c
+         umfpack_transpose.c
+         umfpack_triplet_to_col.c
+         xerbla.c
+         Generating Code...
+         D:\Programs\msvc2012\VC\bin\CL.exe /c /I..\UMFPACK\Include /I..\amd\include /I..\SuiteSparse_config /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D NBLAS /D NCHOLMOD /D _MBCS /Gm- /EHsc /MT /GS /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt umf_demo.cpp
+         umf_demo.cpp
+       Lib:
+         D:\Programs\msvc2012\VC\bin\Lib.exe /OUT:"Release\umf_demo.lib" /NOLOGO Release\amd_1.obj
+         Release\amd_2.obj
+         Release\amd_aat.obj
+         Release\amd_control.obj
+         Release\amd_defaults.obj
+         Release\amd_dump.obj
+         Release\amd_global.obj
+         Release\amd_info.obj
+         Release\amd_order.obj
+         Release\amd_post_tree.obj
+         Release\amd_postorder.obj
+         Release\amd_preprocess.obj
+         Release\amd_valid.obj
+         Release\stdafx.obj
+         Release\SuiteSparse_config.obj
+         Release\umf_analyze.obj
+         Release\umf_apply_order.obj
+         Release\umf_assemble.obj
+         Release\umf_blas3_update.obj
+         Release\umf_build_tuples.obj
+         Release\umf_cholmod.obj
+         Release\umf_colamd.obj
+         Release\umf_create_element.obj
+         Release\umf_demo.obj
+         Release\umf_dump.obj
+         Release\umf_extend_front.obj
+         Release\umf_free.obj
+         Release\umf_fsize.obj
+         Release\umf_garbage_collection.obj
+         Release\umf_get_memory.obj
+         Release\umf_grow_front.obj
+         Release\umf_init_front.obj
+         Release\umf_is_permutation.obj
+         Release\umf_kernel.obj
+         Release\umf_kernel_init.obj
+         Release\umf_kernel_wrapup.obj
+         Release\umf_local_search.obj
+         Release\umf_lsolve.obj
+         Release\umf_ltsolve.obj
+         Release\umf_malloc.obj
+         Release\umf_mem_alloc_element.obj
+         Release\umf_mem_alloc_head_block.obj
+         Release\umf_mem_alloc_tail_block.obj
+         Release\umf_mem_free_tail_block.obj
+         Release\umf_mem_init_memoryspace.obj
+         Release\umf_multicompile.obj
+         Release\umf_realloc.obj
+         Release\umf_report_perm.obj
+         Release\umf_report_vector.obj
+         Release\umf_row_search.obj
+         Release\umf_scale.obj
+         Release\umf_scale_column.obj
+         Release\umf_set_stats.obj
+         Release\umf_singletons.obj
+         Release\umf_solve.obj
+         Release\umf_start_front.obj
+         Release\umf_store_lu.obj
+         Release\umf_symbolic_usage.obj
+         Release\umf_transpose.obj
+         Release\umf_triplet.obj
+         Release\umf_tuple_lengths.obj
+         Release\umf_usolve.obj
+         Release\umf_utsolve.obj
+         Release\umf_valid_numeric.obj
+         Release\umf_valid_symbolic.obj
+         Release\umfpack_col_to_triplet.obj
+         Release\umfpack_defaults.obj
+         Release\umfpack_free_numeric.obj
+         Release\umfpack_free_symbolic.obj
+         Release\umfpack_get_determinant.obj
+         Release\umfpack_get_lunz.obj
+         Release\umfpack_get_numeric.obj
+         Release\umfpack_get_symbolic.obj
+         Release\umfpack_global.obj
+         Release\umfpack_load_numeric.obj
+         Release\umfpack_load_symbolic.obj
+         Release\umfpack_numeric.obj
+         Release\umfpack_qsymbolic.obj
+         Release\umfpack_report_control.obj
+         Release\umfpack_report_info.obj
+         Release\umfpack_report_matrix.obj
+         Release\umfpack_report_numeric.obj
+         Release\umfpack_report_perm.obj
+         Release\umfpack_report_status.obj
+         Release\umfpack_report_symbolic.obj
+         Release\umfpack_report_triplet.obj
+         Release\umfpack_report_vector.obj
+         Release\umfpack_save_numeric.obj
+         Release\umfpack_save_symbolic.obj
+         Release\umfpack_scale.obj
+         Release\umfpack_solve.obj
+         Release\umfpack_symbolic.obj
+         Release\umfpack_tictoc.obj
+         Release\umfpack_timer.obj
+         Release\umfpack_transpose.obj
+         Release\umfpack_triplet_to_col.obj
+         Release\xerbla.obj
+         umf_demo.vcxproj -> D:\Yang\MyJob\Projects\EGQC\PD\PD-Code\PDIGA2d\umf\umf_demo\Release\umf_demo.lib
+     1>Done Building Project "D:\Yang\MyJob\Projects\EGQC\PD\PD-Code\PDIGA2d\umf\umf_demo\umf_demo.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:02:20.76

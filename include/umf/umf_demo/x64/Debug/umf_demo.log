@@ -1,0 +1,237 @@
+﻿  stdafx.cpp
+  amd_1.c
+  amd_2.c
+..\Amd\Source\amd_2.c(603): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  amd_aat.c
+..\Amd\Source\amd_aat.c(180): warning C4244: “=”: 从“std::size_t”转换到“double”，可能丢失数据
+  amd_control.c
+  amd_defaults.c
+  amd_dump.c
+  amd_global.c
+  amd_info.c
+  amd_order.c
+..\Amd\Source\amd_order.c(186): warning C4267: “函数”: 从“size_t”转换到“int”，可能丢失数据
+  amd_post_tree.c
+  amd_postorder.c
+  amd_preprocess.c
+  amd_valid.c
+  SuiteSparse_config.c
+  umf_analyze.c
+..\Umfpack\Source\umf_analyze.c(93): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_analyze.c(580): warning C4068: 未知的杂注
+  umf_apply_order.c
+  umf_assemble.c
+..\Umfpack\Source\umf_assemble.c(115): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(135): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(160): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_assemble.c(266): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(282): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(303): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_assemble.c(535): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_assemble.c(596): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_assemble.c(642): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(663): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(689): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(736): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(761): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(820): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(838): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(884): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(968): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_assemble.c(995): warning C4068: 未知的杂注
+  umf_blas3_update.c
+..\Umfpack\Source\umf_blas3_update.c(80): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_blas3_update.c(116): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_blas3_update.c(151): warning C4068: 未知的杂注
+  umf_build_tuples.c
+  umf_cholmod.c
+  正在生成代码...
+  正在编译...
+  umf_colamd.c
+  umf_create_element.c
+..\Umfpack\Source\umf_create_element.c(30): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(99): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(112): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(136): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(157): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(175): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(184): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(286): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(291): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_create_element.c(402): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_create_element.c(505): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+  umf_dump.c
+  umf_extend_front.c
+..\Umfpack\Source\umf_extend_front.c(34): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_extend_front.c(48): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_extend_front.c(62): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_extend_front.c(76): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_extend_front.c(129): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_extend_front.c(130): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  umf_free.c
+  umf_fsize.c
+  umf_garbage_collection.c
+..\Umfpack\Source\umf_garbage_collection.c(464): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_garbage_collection.c(637): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_garbage_collection.c(676): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+  umf_get_memory.c
+  umf_grow_front.c
+..\Umfpack\Source\umf_grow_front.c(116): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_grow_front.c(117): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_grow_front.c(189): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_grow_front.c(190): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  umf_init_front.c
+..\Umfpack\Source\umf_init_front.c(67): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_init_front.c(68): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  umf_is_permutation.c
+  umf_kernel.c
+  umf_kernel_init.c
+  umf_kernel_wrapup.c
+  umf_local_search.c
+..\Umfpack\Source\umf_local_search.c(487): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_local_search.c(521): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_local_search.c(668): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_local_search.c(1065): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+  umf_lsolve.c
+  umf_ltsolve.c
+  umf_malloc.c
+  umf_mem_alloc_element.c
+  umf_mem_alloc_head_block.c
+  正在生成代码...
+  正在编译...
+  umf_mem_alloc_tail_block.c
+..\Umfpack\Source\umf_mem_alloc_tail_block.c(132): warning C4244: “return”: 从“__int64”转换到“int”，可能丢失数据
+  umf_mem_free_tail_block.c
+..\Umfpack\Source\umf_mem_free_tail_block.c(109): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_mem_free_tail_block.c(124): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_mem_free_tail_block.c(131): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+  umf_mem_init_memoryspace.c
+  umf_multicompile.c
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(115): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(135): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(160): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(266): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(282): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(303): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(535): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(596): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(642): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(663): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(689): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(736): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(761): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(820): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(838): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(884): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(968): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umf_assemble.c(995): warning C4068: 未知的杂注
+e:\qnap.sync\70 peridynamic\include\umf\umfpack\source\umfpack_solve.c(102): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umf_realloc.c
+  umf_report_perm.c
+  umf_report_vector.c
+  umf_row_search.c
+..\Umfpack\Source\umf_row_search.c(667): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_row_search.c(797): warning C4244: “=”: 从“__int64”转换到“int”，可能丢失数据
+  umf_scale.c
+  umf_scale_column.c
+..\Umfpack\Source\umf_scale_column.c(33): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_scale_column.c(160): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_scale_column.c(175): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_scale_column.c(235): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_scale_column.c(249): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_scale_column.c(261): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_scale_column.c(304): warning C4068: 未知的杂注
+..\Umfpack\Source\umf_scale_column.c(318): warning C4068: 未知的杂注
+  umf_set_stats.c
+  umf_singletons.c
+  umf_solve.c
+  umf_start_front.c
+..\Umfpack\Source\umf_start_front.c(161): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umf_start_front.c(173): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  umf_store_lu.c
+  umf_symbolic_usage.c
+  umf_transpose.c
+  umf_triplet.c
+  umf_tuple_lengths.c
+  umf_usolve.c
+  正在生成代码...
+  正在编译...
+  umf_utsolve.c
+  umf_valid_numeric.c
+  umf_valid_symbolic.c
+  umfpack_col_to_triplet.c
+  umfpack_defaults.c
+  umfpack_free_numeric.c
+  umfpack_free_symbolic.c
+  umfpack_get_determinant.c
+  umfpack_get_lunz.c
+  umfpack_get_numeric.c
+..\Umfpack\Source\umfpack_get_numeric.c(366): warning C4068: 未知的杂注
+..\Umfpack\Source\umfpack_get_numeric.c(372): warning C4068: 未知的杂注
+  umfpack_get_symbolic.c
+  umfpack_global.c
+  umfpack_load_numeric.c
+..\Umfpack\Source\umfpack_load_numeric.c(71): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: 参见“fopen”的声明
+  umfpack_load_symbolic.c
+..\Umfpack\Source\umfpack_load_symbolic.c(71): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: 参见“fopen”的声明
+  umfpack_numeric.c
+..\Umfpack\Source\umfpack_numeric.c(118): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_qsymbolic.c
+..\Umfpack\Source\umfpack_qsymbolic.c(480): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_qsymbolic.c(749): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_qsymbolic.c(750): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_qsymbolic.c(752): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_qsymbolic.c(759): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_qsymbolic.c(762): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_qsymbolic.c(925): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_qsymbolic.c(1200): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+  umfpack_report_control.c
+..\Umfpack\Source\umfpack_report_control.c(27): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(99): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(108): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(140): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(180): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(203): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(213): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(271): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_control.c(305): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+  umfpack_report_info.c
+..\Umfpack\Source\umfpack_report_info.c(90): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_info.c(192): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+..\Umfpack\Source\umfpack_report_info.c(283): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_report_matrix.c
+..\Umfpack\Source\umfpack_report_matrix.c(42): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_report_numeric.c
+..\Umfpack\Source\umfpack_report_numeric.c(57): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  正在生成代码...
+  正在编译...
+  umfpack_report_perm.c
+..\Umfpack\Source\umfpack_report_perm.c(32): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_report_status.c
+..\Umfpack\Source\umfpack_report_status.c(29): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_report_symbolic.c
+..\Umfpack\Source\umfpack_report_symbolic.c(38): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_report_triplet.c
+..\Umfpack\Source\umfpack_report_triplet.c(37): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_report_vector.c
+..\Umfpack\Source\umfpack_report_vector.c(34): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_save_numeric.c
+..\Umfpack\Source\umfpack_save_numeric.c(61): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: 参见“fopen”的声明
+  umfpack_save_symbolic.c
+..\Umfpack\Source\umfpack_save_symbolic.c(61): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: 参见“fopen”的声明
+  umfpack_scale.c
+  umfpack_solve.c
+..\Umfpack\Source\umfpack_solve.c(102): warning C4244: “=”: 从“const double”转换到“int”，可能丢失数据
+  umfpack_symbolic.c
+  umfpack_tictoc.c
+  umfpack_timer.c
+  umfpack_transpose.c
+  umfpack_triplet_to_col.c
+  xerbla.c
+  正在生成代码...
+  umf_demo.cpp
+  umf_demo.vcxproj -> E:\QNAP.SYNC\70 PERIDYNAMIC\include\umf\umf_demo\x64\Debug\umf_demo.lib

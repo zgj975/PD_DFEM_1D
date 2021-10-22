@@ -126,7 +126,7 @@ namespace DLUT
 					m_nid_global = -1;
 					m_set_adj_element_ids.clear();
 
-					m_displacement.setZero();
+					m_total_displacement.setZero();
 					m_iter_displacement.setZero();
 					m_delta_displacement.setZero();
 					m_velocity.setZero();
@@ -148,7 +148,7 @@ namespace DLUT
 					m_nid_global = golbal_nid;
 					m_set_adj_element_ids.clear();
 
-					m_displacement.setZero();
+					m_total_displacement.setZero();
 					m_iter_displacement.setZero();
 					m_delta_displacement.setZero();
 					m_velocity.setZero();
@@ -207,27 +207,27 @@ namespace DLUT
 				}
 
 			public:
-				TDisplacement&			Displacement() { return m_displacement; }
-				const TDisplacement&	Displacement() const { return m_displacement; }
-
-				TVelocity&				Velocity() { return m_velocity; }
-				const TVelocity&		Velocity()	const { return m_velocity; }
-
-				TAcceleration&			Acceleration() { return m_acceleration; }
-				const TAcceleration&	Acceleration() const	{ return m_acceleration; }
+				TDisplacement&			TotalDisplacement() { return m_total_displacement; }
+				const TDisplacement&	TotalDisplacement() const { return m_total_displacement; }
 		
 				TDisplacement&			IncrementalDisplacement() { return m_delta_displacement; }
 				const TDisplacement&	IncrementalDisplacement() const { return m_delta_displacement; }
 
 				TDisplacement&			IteratorDisplacement() { return m_iter_displacement; }
 				const TDisplacement&	IteratorDisplacement() const { return m_iter_displacement; }
+
+				TVelocity&				Velocity() { return m_velocity; }
+				const TVelocity&		Velocity() const { return m_velocity; }
+				TAcceleration&			Acceleration() { return m_acceleration; }
+				const TAcceleration&	Acceleration() const { return m_acceleration; }
 			public:
 				TForce&					InnerForce() { return m_force_of_inner; }
 				const TForce&			InnerForce() const { return m_force_of_inner; }
 
 				TForce&					OuterForce() { return m_force_of_outer; }
 				const TForce&			OuterForce() const { return m_force_of_outer; }
-			void						Swap(TNodeBase& rhs)
+			public:
+				void					Swap(TNodeBase& rhs)
 				{
 					if (this != &rhs)
 					{
@@ -237,7 +237,7 @@ namespace DLUT
 						swap(*m_p_local_id, *(rhs.m_p_local_id));
 						swap(m_nid_global, rhs.m_nid_global);
 
-						swap(m_displacement, rhs.m_displacement);
+						swap(m_total_displacement, rhs.m_total_displacement);
 						swap(m_velocity, rhs.m_velocity);
 						swap(m_acceleration, rhs.m_acceleration);
 
@@ -269,13 +269,13 @@ namespace DLUT
 				set<int*>				m_set_adj_element_ids;				//	Adjoint element set
 				int						*m_p_local_id;						//	Id of this node
 				int						m_nid_global;						//	Global Id of this node
-
-				TDisplacement			m_displacement;						//	Displacement
-				TVelocity				m_velocity;							//	Velocity
-				TAcceleration			m_acceleration;						//	Acceleration
-
+			private:
+				TDisplacement			m_total_displacement;				//	Total Displacement
 				TDisplacement			m_delta_displacement;				//	Incremental Displacement of current incremental step
 				TDisplacement			m_iter_displacement;				//	Iterator Displacement
+
+				TVelocity				m_velocity;							//	Velocity
+				TAcceleration			m_acceleration;						//	Acceleration
 			private:
 				TForce					m_force_of_inner;					//	Inner force of this node, such as PD bond force, FEM node force...
 				TForce					m_force_of_outer;					//	Outer force of this node, such as Body force, Interface force...
@@ -354,7 +354,6 @@ namespace DLUT
 
 					m_area = 0;
 					m_local_coord_system.setZero();
-					m_strain_energy_density = 0;
 				}
 				void				Dispose()
 				{
@@ -377,7 +376,6 @@ namespace DLUT
 					m_local_coord_system = right.m_local_coord_system;
 
 					m_IP = right.m_IP;
-					m_strain_energy_density = right.m_strain_energy_density;
 
 					return *this;
 				}
@@ -411,6 +409,7 @@ namespace DLUT
 					m_vec_nids.clear();
 					m_vec_nids = nids;
 					UpdateIPCoordinate();
+					InitializeLocalCoordinateSystem(LocalCoorSystem().block(1, 0, 1, 3).transpose());
 				}
 
 				int&				Id() 
@@ -477,7 +476,7 @@ namespace DLUT
 					Vector2d Z;
 					for (int i = 0; i < 2; ++i)
 					{
-						const Vector3d& dis_local = T * ref_nodes[nids[i]].Displacement().block(0,0,3,1);
+						const Vector3d& dis_local = T * ref_nodes[nids[i]].TotalDisplacement().block(0,0,3,1);
 						X(i) = dis_local.x();
 						Y(i) = dis_local.y();
 						Z(i) = dis_local.z();
@@ -565,9 +564,6 @@ namespace DLUT
 					}
 				}
 
-				double&				StrainEnergyDensity() { return m_strain_energy_density; }
-				double				StrainEnergyDensity() const { return m_strain_energy_density; }
-
 			private:
 				vector<int*>		m_vec_nids;						//	Node Ids of this element
 				int					m_part_id;						//	Part Id of this element
@@ -576,12 +572,10 @@ namespace DLUT
 				ANALYSIS_ELEMENT_TYPE		m_elem_type;			//	Element type
 			private: 
 				double				m_area;							//	Area of this element
-			private:
 				Matrix3d			m_local_coord_system;			//	Local coordinate system of the element
 			private:
 				MATRIX_SINGLE_STIFFNESS_FEM	m_single_stiffness;		//	Single Stiffness Matrix of this element
 				vector<TIntegrationPoint>	m_IP;					//	Integration Points of this element
-				double				m_strain_energy_density;
 			private:
 				vector<TNodeBase>&	ref_nodes;						//	Node Data
 			};

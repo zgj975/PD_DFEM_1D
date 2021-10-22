@@ -54,7 +54,7 @@ namespace DLUT
 					//	总刚矩阵初始化
 					
 					/************************************************************************/
-					/* 节点信息初始化												         */
+					/* 节点信息初始化												        */
 					/************************************************************************/
 					parallel_for_each(nids.begin(), nids.end(), [&](int nid)
 						{
@@ -75,7 +75,7 @@ namespace DLUT
 							}
 						});
 					/************************************************************************/
-					/* P                                                           */
+					/* P																	*/
 					/************************************************************************/
 					vector<double> P;
 					P.clear();
@@ -107,12 +107,12 @@ namespace DLUT
 					}
 					  
 					/************************************************************************/
-					/* 迭代求解                                          */
+					/* 迭代求解																*/
 					/************************************************************************/
 					while (ITERATOR_NUMS < MAX_INTERATOR_NUMS && !CONVERGENCED)
 					{
 						/************************************************************************/
-						/* R                                          */
+						/* R																	*/
 						/************************************************************************/
 						vector<double> R;
 						R.clear();
@@ -216,8 +216,7 @@ namespace DLUT
 						}
 
 						/************************************************************************/
-						/* 求解线性方程组						                    
-						*/
+						/* 求解线性方程组						                        		*/
 						/************************************************************************/						
 						vector<double> DISPLACEMENT;
 						DISPLACEMENT.clear();
@@ -235,8 +234,21 @@ namespace DLUT
 								node.IteratorDisplacement()[loop_dim] = DISPLACEMENT[DOF * nid + loop_dim];
 								node.IncrementalDisplacement()[loop_dim] += DISPLACEMENT[DOF * nid + loop_dim];
 							}
-						}															
-						
+						}						
+						/************************************************************************/
+						/*  进行当前迭代步下的应力、应变更新操作                                */
+						/************************************************************************/
+						updateStrainStressFEM();
+						updateStrainStressPD();
+						parallel_for_each(nids.begin(), nids.end(), [&](int nid)
+							{
+								TPdNode& node = pdModel.PdMeshCore().Node(nid);
+								node.InnerForce().setZero();
+							});
+						updateInnerForceFEM();
+						updateInnerForcePD();
+		
+						ITERATOR_NUMS++;
 						/************************************************************************/
 						/* 根据位移结果进行判定是否已经收敛                                     */
 						/************************************************************************/
@@ -248,29 +260,7 @@ namespace DLUT
 							/************************************************************************/
 							updateInfoAfterConvergenceFEM();
 							updateInfoAfterConvergencePD();
-
-					//		RefreshFracture(); 
-
-							break;
 						}
-						else
-						{
-							/************************************************************************/
-							/* 迭代不收敛，只更新应变/应力/单元&节点内力，并进行下一次迭代          */
-							/************************************************************************/
-							updateStrainStressFEM();
-							updateStrainStressPD();
-
-							parallel_for_each(nids.begin(), nids.end(), [&](int nid)
-								{
-									TPdNode& node = pdModel.PdMeshCore().Node(nid);
-									node.InnerForce().setZero();
-								});
-							updateInnerForceFEM();
-							updateInnerForcePD();
-						}
-
-						ITERATOR_NUMS++;
 					}
 
 					return CONVERGENCED;
@@ -281,52 +271,50 @@ namespace DLUT
 				void				ExplicitSolve(double time_interval)
 				{
 					TPdModel& pdModel = *m_pPdModel;
-					calPdForces();
+					const set<int>& eids = pdModel.PdMeshCore().GetElementIdsByAll();
+					const set<int>& nids = pdModel.PdMeshCore().GetNodeIdsByAll();
+					
+					//	计算应变、应力
+					updateStrainStressFEM();
+					updateStrainStressPD();
 
-					for (const TPart& part : pdModel.Parts())
-					{
-						const TMaterial& material = pdModel.Material(part.MaterialId());
-						if (material.Name() == "MAT_RIGID")
-							continue;
-
-						const TSection& section = pdModel.Section(part.SectionId());
-						double Rho = material.GetMatValue("Rho");
-						double thickness = section.GetSectionValue("THICKNESS");
-
-						const set<int>& eleIds = part.GetElementIds();
-						set<int> nodeIds;
-						nodeIds.clear();
-						for (int eid : eleIds)
-						{
-							const TPdElement& element = pdModel.PdMeshCore().Element(eid);
-							for (int nid : element.NodeIds())
-							{
-								nodeIds.insert(nid);
-							}
-						}
-
-						parallel_for_each(nodeIds.begin(), nodeIds.end(), [&](int nid)
+					//	计算节点内力
+					parallel_for_each(nids.begin(), nids.end(), [&](int nid)
 						{
 							TPdNode& node = pdModel.PdMeshCore().Node(nid);
-							double nVolume = 0;
-							set<int> adjEleIds = node.AdjElementIds();
-							for (int adjEle : adjEleIds)
-							{
-								const TPdElement& element = pdModel.PdMeshCore().Element(adjEle);
-								nVolume += 0.25 * element.Area() * element.SideLength();
-							}
-							node.Acceleration() = (node.OuterForce() - node.InnerForce()) / (Rho * nVolume);
-							node.Velocity() = node.Velocity() + node.Acceleration() * time_interval;
-							node.Displacement() = node.Displacement() + node.Velocity() * time_interval;
+							node.InnerForce().setZero();
 						});
-					}
+					updateInnerForceFEM();
+					updateInnerForcePD();
+
+					//	更新积分点信息
+					updateInfoAfterConvergenceFEM();
+					updateInfoAfterConvergencePD();	
+	
+					//	中心差分法计算当前步的增量位移
+					parallel_for_each(nids.begin(), nids.end(), [&](int nid)
+						{
+							TPdNode& node = pdModel.PdMeshCore().Node(nid);
+
+							int nodePos = node.Id() * DOF;
+							node.Acceleration().x() = (node.OuterForce().x() - node.InnerForce().x()) / m_GM[nodePos][nodePos];
+							node.Acceleration().y() = (node.OuterForce().y() - node.InnerForce().y()) / m_GM[nodePos + 1][nodePos + 1];
+							node.Acceleration().z() = (node.OuterForce().z() - node.InnerForce().z()) / m_GM[nodePos + 2][nodePos + 2];
+							node.Acceleration().rx() = (node.OuterForce().rx() - node.InnerForce().rx()) / m_GM[nodePos + 3][nodePos + 3];
+							node.Acceleration().ry() = (node.OuterForce().ry() - node.InnerForce().ry()) / m_GM[nodePos + 4][nodePos + 4];
+							node.Acceleration().rz() = (node.OuterForce().rz() - node.InnerForce().rz()) / m_GM[nodePos + 5][nodePos + 5];
+
+							node.Velocity() = node.Velocity() + node.Acceleration() * time_interval;
+							node.IncrementalDisplacement() = node.IteratorDisplacement() = node.Velocity() * time_interval;
+						});
 				}
 				
 			private:
 				/************************************************************************/
-				/* Begin of PD                                  */
+				/* Begin of PD															*/
 				/************************************************************************/
 				void				initializeMatParasPD()
+
 				{
 					double start = clock();
 
@@ -417,6 +405,8 @@ namespace DLUT
 						});						
 					}
 
+					genGlobalMass();
+
 					double total_time = (clock() - start) / 1000;
 					cout << "initializeMatParasPD():\t\t" << total_time << endl;
 				}	
@@ -460,6 +450,7 @@ namespace DLUT
 					const vector<TPdBond>& bonds = family_elem.Bonds();
 					for (const TPdBond& bond : bonds)
 					{
+						//	只针对未失效的bond进行操作
 						if (bond.IsValid())
 						{
 							double L = bond.BondLength();
@@ -478,7 +469,7 @@ namespace DLUT
 								M(0, 0) = M(1, 1) = bond.IP(is).StressCurrent().x();
 
 								k += H_IP_1D[is] * BL.transpose() * element_i.CalParas().D_PD * BL * L;	// K0
-								k += H_IP_1D[is] * G.transpose() * M * G * L;								// K_sigma
+								k += H_IP_1D[is] * G.transpose() * M * G * L;							// K_sigma
 							}
 
 							Eigen::Matrix<double, 12, 24> TbTetNijTE = Tb_Tet_Nij_TE(element_i, element_j, bond);
@@ -624,7 +615,7 @@ namespace DLUT
 											TStrain delta_strain_local = (BL + BN_star) * delta_u_local;
 											TStress delta_stress_local = D_PD * delta_strain_local;
 										
-											bond.MicroPotential() += ((bond.IP(js).StressCurrent() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
+											bond.MicroPotentialDensity() += ((bond.IP(js).StressCurrent() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
 
 											bond.IP(js).StrainCurrent() += delta_strain_local;
 											bond.IP(js).StressCurrent() += delta_stress_local;
@@ -773,7 +764,7 @@ namespace DLUT
 												TStrain delta_strain_local = (BL + BN_star) * delta_u_local;
 												TStress delta_stress_local = D_PD * delta_strain_local;
 
-												bond.MicroPotential() += ((bond.IP(js).StressLaststep() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js] * L;
+												bond.MicroPotentialDensity() += ((bond.IP(js).StressLaststep() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
 
 												bond.IP(js).StrainLaststep() = bond.IP(js).StrainCurrent();
 												bond.IP(js).StressLaststep() = bond.IP(js).StressCurrent();
@@ -811,11 +802,10 @@ namespace DLUT
 							}
 						});
 				}
-			private:
+			private: 
 				void				calPdForces()
 				{
 					TPdModel& pdModel = *m_pPdModel;
-
 					/************************************************************************/
 					/* 每一步都需要将内力置零初始化                                         */
 					/************************************************************************/
@@ -833,29 +823,27 @@ namespace DLUT
 					parallel_for_each(eids.begin(), eids.end(), [&](int ei)
 						{
 							TPdElement& element_i = pdModel.PdMeshCore().Element(ei);
-							//	将单元I和单元J对应的节点放入一个nids，长度为8
-							vector<int> nids_i = element_i.NodeIds();
 
 							LIST_NJ_FAMILY_ELEMENT& familyElements = element_i.FamilyElements();
 							for (TPdFamilyElement& family_elem : familyElements)
 							{
 								TPdElement& element_j = pdModel.PdMeshCore().Element(family_elem.Id());
-								vector<int> nids_j = element_j.NodeIds();
+						
+								//	将单元I和单元J对应的节点放入一个nids，长度为4
+								vector<int> nids = element_i.NodeIds();
+								for (int nj : element_j.NodeIds())
+								{
+									nids.push_back(nj);
+								}
 								const MATRIX_SINGLE_STIFFNESS_PD& SK = family_elem.SK();
 
 								VectorXd DIS;
-								DIS.resize(16);
+								DIS.resize(24);
 								DIS.setZero();
 								int loop_Dis = 0;
-								for (int ni : nids_i)
+								for (int nid : nids)
 								{
-									DIS[loop_Dis++] = pdModel.PdMeshCore().Node(ni).Displacement().x();
-									DIS[loop_Dis++] = pdModel.PdMeshCore().Node(ni).Displacement().y();
-								}
-								for (int nj : nids_j)
-								{
-									DIS[loop_Dis++] = pdModel.PdMeshCore().Node(nj).Displacement().x();
-									DIS[loop_Dis++] = pdModel.PdMeshCore().Node(nj).Displacement().y();
+									DIS.block(6 * loop_Dis++, 0, 6, 1) = pdModel.PdMeshCore().Node(nid).TotalDisplacement();
 								}
 
 								family_elem.ForceOfBond() = SK * DIS;
@@ -867,67 +855,23 @@ namespace DLUT
 					/************************************************************************/
 					for (int ei : eids)
 					{
-						TPdElement& element_i = pdModel.PdMeshCore().Element(ei);
-						vector<int> nids_i = element_i.NodeIds();
+						TPdElement& element_i = pdModel.PdMeshCore().Element(ei);						
 						LIST_NJ_FAMILY_ELEMENT& familyElements = element_i.FamilyElements();
 						for (TPdFamilyElement& family_elem : familyElements)
 						{
 							TPdElement& element_j = pdModel.PdMeshCore().Element(family_elem.Id());
-							const VectorXd& FORCE = family_elem.ForceOfBond();
-							vector<int> nids_j = element_j.NodeIds();
-
+							//	将单元I和单元J对应的节点放入一个nids，长度为4
+							vector<int> nids = element_i.NodeIds();
+							for (int nj : element_j.NodeIds())
+							{
+								nids.push_back(nj);
+							}
+							const MATRIX_PD_FORCE_PD& FORCE = family_elem.ForceOfBond();
+							
 							int loop_force = 0;
-							for (int ni : nids_i)
-							{
-								pdModel.PdMeshCore().Node(ni).InnerForce().x() += FORCE[loop_force++];
-								pdModel.PdMeshCore().Node(ni).InnerForce().y() += FORCE[loop_force++];
-							}
-							for (int nj : nids_j)
-							{
-								pdModel.PdMeshCore().Node(nj).InnerForce().x() += FORCE[loop_force++];
-								pdModel.PdMeshCore().Node(nj).InnerForce().y() += FORCE[loop_force++];
-							}
-						}
-					}
-				}
-				void				genGlobalMassPD()
-				{
-					TPdModel& pdModel = *m_pPdModel;
-
-					int nCount = pdModel.PdMeshCore().NodeCount();
-					m_GM.clear();
-					m_GM.resize(DOF * nCount);
-
-					for (const TPart& part : pdModel.Parts())
-					{
-						const set<int> eids = part.GetElementIds();
-						const TMaterial& material = pdModel.Material(part.MaterialId());
-						const TSection& section = pdModel.Section(part.SectionId());
-
-						double Rho = material.GetMatValue("Rho");
-						double Iyy = section.GetSectionValue("ISS");
-						double Izz = section.GetSectionValue("ITT");
-						double Ixx = Iyy + Izz;
-						/************************************************************************/
-						/* 组装质量矩阵                                                         */
-						/************************************************************************/
-						for (int ei : eids)
-						{
-							const TPdElement& element = pdModel.PdMeshCore().Element(ei);
-							//	将单元I和单元J对应的节点放入一个nids，长度为8
-							const vector<int>& nids = element.NodeIds();
-							double A = element.Area();
-							double L = element.SideLength();
 							for (int ni : nids)
 							{
-								int CurPos = ni * DOF;
-								m_GM[CurPos][CurPos] += Rho * A * L / 2.0;
-								m_GM[CurPos + 1][CurPos + 1] += Rho * A * L / 2.0;
-								m_GM[CurPos + 2][CurPos + 2] += Rho * A * L / 2.0;
-
-								m_GM[CurPos + 3][CurPos + 3] += Rho * Ixx * L/ 2.0;
-								m_GM[CurPos + 4][CurPos + 4] += Rho * Iyy * L / 2.0;
-								m_GM[CurPos + 5][CurPos + 5] += Rho * Izz * L / 2.0;
+								pdModel.PdMeshCore().Node(ni).InnerForce() += FORCE.block(6 * loop_force++, 0, 6, 1);
 							}
 						}
 					}
@@ -994,30 +938,42 @@ namespace DLUT
 								double sed_criterion = element_i.CalParas().sed_criterion;
 
 								LIST_NJ_FAMILY_ELEMENT& familyElements = element_i.FamilyElements();
+
 								for (TPdFamilyElement& family_elem : familyElements)
 								{
 									const TPdElement& element_j = pdModel.PdMeshCore().Element(family_elem.Id());
-						
+
+									if (element_i.Id() == element_j.Id())
+										continue;
+
 									vector<TPdBond>& bonds = family_elem.Bonds();
 									int nCountBondFractured = 0;
 									for (TPdBond& bond : bonds)
 									{
-										if (bond.MicroPotential() > sed_criterion)
+										if (bond.MicroPotentialDensity() > sed_criterion)
 										{
-											
+											nCountBondFractured++;
 										}
-									}									
+									}
+									if (nCountBondFractured == (int)(bonds.size()))
+									{
+										for (TPdBond& bond :bonds)
+										{
+											bond.Failured();
+										}
+									}
 								}
 							}
 						});
 				}
 				/************************************************************************/
-				/* End of PD                                  */
+				/* End of PD                                  							*/
 				/************************************************************************/
 			private:
 				/************************************************************************/
-				/* Begin of FEM                                  */
+				/* Begin of FEM															*/
 				/************************************************************************/
+
 				void				genSingleStiffnessFEM()
 				{
 					TPdModel& pdModel = *m_pPdModel;
@@ -1133,12 +1089,7 @@ namespace DLUT
 
 									TStrain delta_strain_local = (BL + BN_star) * delta_u_local;
 									TStress delta_stress_local = D_H * delta_strain_local;
-
-									if (is == 1)
-									{
-										element.StrainEnergyDensity() += ((element.IP(is).StressCurrent() + 0.5 * delta_stress_local).transpose() * delta_strain_local)(0, 0) / element.Area();
-									}
-
+																		
 									element.IP(is).StrainCurrent() += delta_strain_local;
 									element.IP(is).StressCurrent() += delta_stress_local;
 								}
@@ -1190,7 +1141,6 @@ namespace DLUT
 						}
 					}
 				}
-
 				void				updateInfoAfterConvergenceFEM()
 				{
 					TPdModel& pdModel = *m_pPdModel;
@@ -1231,46 +1181,7 @@ namespace DLUT
 									MatrixXd lcs_new = element.LocalCoorSystem() * R_TorisonOfX.transpose() * R_RotationOfZ.transpose();
 									element.LocalCoorSystem() = lcs_new;
 								}
-							}
-
-							//	更新单元应变能密度（在纯PD区域不需要进行）
-							if (element.AnalysisElementType() != PD_ELEMENT)
-							{
-								double L = element.SideLength();
-								const Eigen::Matrix4d& D_H = element.CalParas().D_H;
-								const Eigen::Matrix4d& D = element.CalParas().D_FEM;
-
-								int nid1 = element.NodeId(0);
-								int nid2 = element.NodeId(1);
-								const TPdNode& node1 = pdModel.PdMeshCore().Node(nid1);
-								const TPdNode& node2 = pdModel.PdMeshCore().Node(nid2);
-
-								MatrixXd delta_u_global;
-								delta_u_global.resize(12, 1);
-								delta_u_global.block(0, 0, 6, 1) = node1.IncrementalDisplacement();
-								delta_u_global.block(6, 0, 6, 1) = node2.IncrementalDisplacement();
-
-								MatrixXd T;
-								T.resize(12, 12);
-								T.setZero();
-								T.block(0, 0, 3, 3) = element.LocalCoorSystem();
-								T.block(3, 3, 3, 3) = element.LocalCoorSystem();
-								T.block(6, 6, 3, 3) = element.LocalCoorSystem();
-								T.block(9, 9, 3, 3) = element.LocalCoorSystem();
-
-								MatrixXd delta_u_local = T * delta_u_global;
-
-								//	在中间的积分点处计算单元的应变能密度
-								int is = 1;
-
-								Eigen::MatrixXd BL = BL_Matrix(L, S_IP_1D[is]);
-								Eigen::MatrixXd BN_star = BN_star_Matrix(L, S_IP_1D[is], delta_u_local);
-
-								TStrain delta_strain_local = (BL + BN_star) * delta_u_local;
-								TStress delta_stress_local = D_H * delta_strain_local;
-
-								element.StrainEnergyDensity() += ((element.IP(is).StressLaststep() + 0.5 * delta_stress_local).transpose() * delta_strain_local)(0, 0) / element.Area();
-							}
+							}							
 
 							//	更新单元积分点处的应力和应变信息
 							for (int is = 0; is < IP_COUNT_1D; ++is)
@@ -1288,28 +1199,93 @@ namespace DLUT
 							/* 当前增量步的位移累加到全局节点总位移                                 */
 							/* 节点当前步的位移更新为上一步位移+当前增量步的位移                    */
 							/************************************************************************/
-							node.Displacement() += node.IncrementalDisplacement();
+							node.TotalDisplacement() += node.IncrementalDisplacement();
 							node.Coordinate() += node.IncrementalDisplacement().block(0, 0, 3, 1);
 						});
-				}				
+				}
 				/************************************************************************/
-				/* End of FEM                                  */
+				/* End of FEM															*/
 				/************************************************************************/
 
 
 				/************************************************************************/
-				/* Begin of PD&FEM                                  */
+				/* Begin of PD&FEM														*/
 				/************************************************************************/
+				void				genGlobalMass()
+				{
+					double start = clock();
+					TPdModel& pdModel = *m_pPdModel;
+
+					const set<int>& nids = pdModel.PdMeshCore().GetNodeIdsByAll();
+					int nCount = (int)(nids.size());
+					m_GM.clear();
+					m_GM.resize(DOF * nCount);
+
+					for (const TPart& part : pdModel.Parts())
+					{
+						const set<int> eids = part.GetElementIds();
+						const TMaterial& material = pdModel.Material(part.MaterialId());
+						const TSection& section = pdModel.Section(part.SectionId());
+			
+						double Rho = material.GetMatValue("Rho");	
+						double Iyy = section.GetSectionValue("ISS");
+						double Izz = section.GetSectionValue("ITT");
+						double Ixx = Iyy + Izz;
+
+						/************************************************************************/
+						/* 组装质量矩阵                                                         */
+						/************************************************************************/
+						for (int ei : eids)
+						{
+							const TPdElement& element = pdModel.PdMeshCore().Element(ei);
+							//	将单元I和单元J对应的节点放入一个nids，长度为8
+							const vector<int>& nids = element.NodeIds();
+							double A = element.Area();
+							double L = element.SideLength();
+							Eigen::Matrix<double, 6, 6> LocalM;
+							LocalM.setZero();
+							LocalM(0, 0) = Rho * A * L / 2.0;
+							LocalM(1, 1) = Rho * A * L / 2.0;
+							LocalM(2, 2) = Rho * A * L / 2.0;
+							LocalM(3, 3) = Rho * Ixx * L / 2.0;
+							LocalM(4, 4) = Rho * Iyy * L / 2.0;
+							LocalM(5, 5) = Rho * Izz * L / 2.0;
+
+							Eigen::Matrix<double, 6, 6> T;
+							T.setZero();
+							T.block(0, 0, 3, 3) = element.LocalCoorSystem();
+							T.block(3, 3, 3, 3) = element.LocalCoorSystem();
+
+							Eigen::Matrix<double, 6, 6> GlobalM = T * LocalM * T.transpose();
+
+							for (int ni : nids)
+							{
+								int CurPos = ni * DOF;
+
+								for (int col = 0; col < 6; ++col)
+								{
+									m_GM[CurPos][CurPos] += GlobalM(0, col);
+									m_GM[CurPos + 1][CurPos + 1] += GlobalM(1, col);
+									m_GM[CurPos + 2][CurPos + 2] += GlobalM(2, col);
+
+									m_GM[CurPos + 3][CurPos + 3] += GlobalM(3, col);
+									m_GM[CurPos + 4][CurPos + 4] += GlobalM(4, col);
+									m_GM[CurPos + 5][CurPos + 5] += GlobalM(5, col);
+								}
+							}
+						}
+					}
+					double total_time = (clock() - start) / 1000;
+					cout << "genGlobalMassPD():\t\t" << total_time << endl;
+				}
 				bool				isConvergenced()
 				{
 					bool CONVERGENCED = true;
 
 					TPdModel& pdModel = *m_pPdModel;
 					set<int> nids = pdModel.PdMeshCore().GetNodeIdsByAll();
-					double MaxOfIterU = -1E20;
-					double MaxOfIncrU = -1E20;
 
-					double MaxOfIterDisp = -1E20;
+					double RatioIterIncr = -1E20;
 					
 					for (int nid : nids)
 					{
@@ -1319,28 +1295,16 @@ namespace DLUT
 						if (BPMs.size() == 0)
 						{
 							double IterDisp = Module(node.IteratorDisplacement());
-							if (IterDisp > MaxOfIterDisp)
+							double IncrDisp = Module(node.IncrementalDisplacement());
+							double ratio_iter_incr = IterDisp / IncrDisp;
+							if (ratio_iter_incr > RatioIterIncr)
 							{
-								MaxOfIterDisp = IterDisp;
+								RatioIterIncr = ratio_iter_incr;
 							}
-
-							//for (int loop_dim = 0; loop_dim < DOF; ++loop_dim)
-							//{
-							//	double IterU = abs(node.IteratorDisplacement()[loop_dim]);
-							//	double IncreU = abs(node.IncrementalDisplacement()[loop_dim]);
-							//	if (IncreU > MaxOfIncrU)
-							//	{
-							//		MaxOfIncrU = IncreU;
-							//		MaxOfIterU = IterU;
-							//	}
-							//}
 						}
 					}
 
-
-					/*double ratio = MaxOfIterU / MaxOfIncrU;
-					if (ratio > CONVERGENCE_FACTOR)*/
-					if (MaxOfIterDisp > CONVERGENCE_FACTOR)
+					if (RatioIterIncr > CONVERGENCE_FACTOR)
 					{
 						CONVERGENCED = false;
 					}
@@ -1410,7 +1374,7 @@ namespace DLUT
 					return Res;
 				}
 				/************************************************************************/
-				/* End of PD&FEM                                  */
+				/* End of PD&FEM														*/
 				/************************************************************************/							
 			private:
 				vector< map<int, double> > m_GK;			//	Stiffness matrix

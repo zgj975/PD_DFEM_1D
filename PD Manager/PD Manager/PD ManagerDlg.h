@@ -38,13 +38,12 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedRadioConstantHorizon();
 	afx_msg void OnBnClickedRadioConstantM();
-	afx_msg void OnBnClickedRadioModal();
 	CString m_fp_information;
 	double 	m_ratio_of_delta_meshsize;
 	double	m_time_step;
 	int		m_plot_frames;
 	int		m_radio_analysis_type;
-	int		m_iterator_nums;
+	double	m_iterator_nums;
 	int 	m_load_step;
 	int		m_radio_horizon_type;
 	double	m_d_const_horizon;

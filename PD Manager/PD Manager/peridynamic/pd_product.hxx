@@ -109,7 +109,7 @@ namespace DLUT
 					seri_ascii.OutputHwAscii(0);
 						
 					//	Step 2: Refresh initial velocity/Acceleration/
-					m_pd_model.RefreshInitVelocityInfo();									
+					m_pd_model.RefreshInitVelocityInfo();
 
 					TSolver solver;
 					solver.Attach(m_pd_model);
@@ -122,13 +122,14 @@ namespace DLUT
 						m_pd_model.RefreshLoadNodeInfo(tt * m_time_step);
 
 						//	Step 4.0: Load
-						m_pd_model.RefreshPreMotionInfo(tt * m_time_step);
+						m_pd_model.RefreshPreMotionInfo(tt, m_time_step);
 
 						//	Step 4.1: Calculate all the PD force 
 						solver.ExplicitSolve(m_time_step);
 
-						//	Step 4.3: Update boundary/motion information
+						//	Step 4.2 刷新约束信息
 						m_pd_model.RefreshBoundarySpcInfo();
+
 						//	Step 4.4: Check fracture
 						solver.RefreshFracture();
 

@@ -87,7 +87,7 @@ namespace DLUT
 
 					fprintf(fout, "$BINDING\t = NODE\n");
 					fprintf(fout, "$COLUMN_INFO\t = ENTITY_ID\n");
-					fprintf(fout, "$RESULT_TYPE\t = Displacement(v), Rotation(v)\n");
+					fprintf(fout, "$RESULT_TYPE\t = Displacement(v), OuterForce(v), InnerForce(v)\n");
 
 					/************************************************************************/
 					/* 按照有限元节点输出物理量                                             */
@@ -99,13 +99,17 @@ namespace DLUT
 												
 						fprintf(fout, "%15d", node.Id()+1);
 
-						fprintf(fout, "%20.10E", node.Displacement().x());
-						fprintf(fout, "%20.10E", node.Displacement().y());
-						fprintf(fout, "%20.10E", node.Displacement().z());
+						fprintf(fout, "%20.10E", node.TotalDisplacement().x());
+						fprintf(fout, "%20.10E", node.TotalDisplacement().y());
+						fprintf(fout, "%20.10E", node.TotalDisplacement().z());
 
-						fprintf(fout, "%20.10E", node.Displacement().rx());
-						fprintf(fout, "%20.10E", node.Displacement().ry());
-						fprintf(fout, "%20.10E", node.Displacement().rz());
+						fprintf(fout, "%20.10E", node.OuterForce().x());
+						fprintf(fout, "%20.10E", node.OuterForce().y());
+						fprintf(fout, "%20.10E", node.OuterForce().z());
+
+						fprintf(fout, "%20.10E", node.InnerForce().x());
+						fprintf(fout, "%20.10E", node.InnerForce().y());
+						fprintf(fout, "%20.10E", node.InnerForce().z());
 						
 						fprintf(fout, "\n");
 					}	
@@ -115,14 +119,13 @@ namespace DLUT
 					/************************************************************************/
 					fprintf(fout, "$BINDING\t = ELEMENT\n");
 					fprintf(fout, "$COLUMN_INFO\t = ENTITY_ID\n");
-					fprintf(fout, "$RESULT_TYPE\t = ALPHA(s), DamageIndex(s)\n");
+					fprintf(fout, "$RESULT_TYPE\t = DamageIndex(s)\n");
 					const set<int> femElemIds = pdModel.PdMeshCore().GetElementIdsByAll();
 					for (int eid : femElemIds)
 					{
 						const TPdElement& element = pdModel.PdMeshCore().Element(eid);
 		
 						fprintf(fout, "%15d", element.Id() + 1);
-						fprintf(fout, "%15.6E", element.Alpha());
 						fprintf(fout, "%15.6E", element.DamageIndex());
 						fprintf(fout, "\n");						
 					}
@@ -166,10 +169,10 @@ namespace DLUT
 						for (int eid : opEleIds)
 						{
 							const TPdElement& element = pdModel.PdMeshCore().Element(eid);
-							TDisplacement nodeDis = pdModel.PdMeshCore().Node(element.NodeId(0)).Displacement() +
-								pdModel.PdMeshCore().Node(element.NodeId(1)).Displacement() +
-								pdModel.PdMeshCore().Node(element.NodeId(2)).Displacement() +
-								pdModel.PdMeshCore().Node(element.NodeId(3)).Displacement();
+							TDisplacement nodeDis = pdModel.PdMeshCore().Node(element.NodeId(0)).TotalDisplacement() +
+								pdModel.PdMeshCore().Node(element.NodeId(1)).TotalDisplacement() +
+								pdModel.PdMeshCore().Node(element.NodeId(2)).TotalDisplacement() +
+								pdModel.PdMeshCore().Node(element.NodeId(3)).TotalDisplacement();
 							nodeDis /= 4;
 
 							fprintf(fout, "%20.10f", nodeDis.x());						

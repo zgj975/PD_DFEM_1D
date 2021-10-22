@@ -61,7 +61,7 @@ CPDManagerDlg::CPDManagerDlg(CWnd* pParent /*=NULL*/)
 	, m_radio_horizon_type(0)
 	, m_d_const_horizon(3.0)
 	, m_max_iter_nums(100)
-	, m_convergence_factor(0.01)
+	, m_convergence_factor(1E-3)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -90,7 +90,6 @@ BEGIN_MESSAGE_MAP(CPDManagerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_RADIO_IMPLICIT, &CPDManagerDlg::OnBnClickedRadioImplicit)
 	ON_BN_CLICKED(IDOK, &CPDManagerDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDC_RADIO_EXPLICIT, &CPDManagerDlg::OnBnClickedRadioExplicit)
-	ON_BN_CLICKED(IDC_RADIO_MODAL, &CPDManagerDlg::OnBnClickedRadioModal)
 	ON_BN_CLICKED(IDC_RADIO_CONSTANT_HORIZON, &CPDManagerDlg::OnBnClickedRadioConstantHorizon)
 	ON_BN_CLICKED(IDC_RADIO_CONSTANT_M, &CPDManagerDlg::OnBnClickedRadioConstantM)
 END_MESSAGE_MAP()
@@ -228,20 +227,6 @@ void CPDManagerDlg::OnBnClickedRadioExplicit()
 	UpdateData(FALSE);
 }
 
-void CPDManagerDlg::OnBnClickedRadioModal()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	UpdateData(TRUE);
-
-	GetDlgItem(IDC_EDIT_LOAD_STEP)->EnableWindow(FALSE);
-	GetDlgItem(IDC_EDIT_TIME_STEP)->EnableWindow(FALSE);
-	GetDlgItem(IDC_EDIT_ITERATOR_NUMS)->EnableWindow(FALSE);
-
-	m_plot_frames = 12;
-
-	UpdateData(FALSE);
-}
-
 void CPDManagerDlg::OnBnClickedRadioConstantHorizon()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -309,7 +294,7 @@ void CPDManagerDlg::OnBnClickedOk()
 	else if (m_radio_analysis_type == 1)
 	{
 		product.SetTimeStep(m_time_step);
-		product.SetIteratorNums(m_iterator_nums);
+		product.SetIteratorNums((int)(m_iterator_nums));
 		product.SetPlotFrames(m_plot_frames);
 
 		product.ExplicitAnalysis();

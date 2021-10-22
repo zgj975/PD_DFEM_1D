@@ -75,7 +75,7 @@ namespace DLUT
 					m_local_coord_system = bond_local_coor_sys;
 					m_IP.clear();
 					m_IP.resize(IP_COUNT_1D);
-					m_micro_potential = 0;
+					m_micro_potential_density = 0;
 					m_b_is_valid = true;
 				}
 			public:
@@ -94,12 +94,12 @@ namespace DLUT
 				TBondIntegrationPoint&			IP(int index) { return m_IP[index]; }
 				const TBondIntegrationPoint&	IP(int index) const { return m_IP[index]; }
 			public:
-				double						MicroPotential() const { return m_micro_potential; }
-				double&						MicroPotential() { return m_micro_potential; }
+				double						MicroPotentialDensity() const { return m_micro_potential_density; }
+				double&						MicroPotentialDensity() { return m_micro_potential_density; }
 				bool						IsValid() const { return m_b_is_valid; }
 				void						Failured() { m_b_is_valid = false; }
 			private:
-				double						m_micro_potential;
+				double						m_micro_potential_density;
 				bool						m_b_is_valid;
 			private:
 				Matrix3d					m_local_coord_system;	//	Local coordinate system of the bond
@@ -682,11 +682,13 @@ namespace DLUT
 						TPdNode& node = PdMeshCore().Node(nid);
 						const vector<TBoundarySpcNode>& BSNs = node.BoundarySpcNode();
 						for (const TBoundarySpcNode& tbsn : BSNs)
-					{
-						int dof = tbsn.Dof() - 1;
-							node.Displacement()(dof) = 0;
+						{
+							int dof = tbsn.Dof() - 1;
+							node.TotalDisplacement()(dof) = 0;
+							node.IteratorDisplacement()(dof) = 0;
+							node.IncrementalDisplacement()(dof) = 0;
+						}
 					}
-				}
 				}
 				//	Refresh the *INITIAL_VELOCITY informations into PD MODEL
 				void				RefreshInitVelocityInfo()
@@ -697,10 +699,10 @@ namespace DLUT
 						TPdNode& node = PdMeshCore().Node(nid);
 						const vector<TInitialVelocityNode>& IVNs = node.InitVelocity();
 						for (const TInitialVelocityNode& tivn : IVNs)
-					{
+						{
 							node.Velocity() = tivn.Velocity();
+						}
 					}
-					}					
 				}
 				//	Refresh the *LOAD_NODE_POINT informations into PD MODEL
 				void				RefreshLoadNodeInfo(double cur_time)
@@ -711,141 +713,93 @@ namespace DLUT
 						TPdNode& node = PdMeshCore().Node(nid);
 						const vector<TLoadNodePoint>& LNPs = node.LoadNodePoint();
 						for (const TLoadNodePoint& tlnp : LNPs)
-					{
-						int curid = tlnp.Lcid();
-						
-						double value_force = 0;
-						if (CurveExist(curid))
 						{
-							TCurve& curve = Curve(curid);
-							value_force = curve.GetValueByX(cur_time) * tlnp.Sf();
-						}
-						else
-						{
-							value_force = tlnp.Sf();
-						}
-						
-						switch (tlnp.Dof())
-						{
-						case 1:
-						{
-								node.OuterForce().x() = value_force;
-							break;
-						}
-						case 2:
-						{
-								node.OuterForce().y() = value_force;
-							break;
-						}
-						case 3:
-						{
-								node.OuterForce().z() = value_force;
-							break;
-						}
-						default:
-							break;
+							int curid = tlnp.Lcid();
+
+							double value_force = 0;
+							if (CurveExist(curid))
+							{
+								TCurve& curve = Curve(curid);
+								value_force = curve.GetValueByX(cur_time) * tlnp.Sf();
+							}
+							else
+							{
+								value_force = tlnp.Sf();
+							}
+
+							switch (tlnp.Dof())
+							{
+								case 1:
+								{
+									node.OuterForce().x() = value_force;
+									break;
+								}
+								case 2:
+								{
+									node.OuterForce().y() = value_force;
+									break;
+								}
+								case 3:
+								{
+									node.OuterForce().z() = value_force;
+									break;
+								}
+								default:
+								{
+									break;
+								}
+							}
 						}
 					}
 				}
-				}
 				//	Refresh the *BOUNDARY_PRESCRIBED_MOTION_NODE information into the PD MODEL 
-				void				RefreshPreMotionInfo(double cur_time)
-				{	
+				void				RefreshPreMotionInfo(int tt, double m_time_step)
+				{
 					const set<int>& nids = PdMeshCore().GetNodeIdsByAll();
-						for (int nid : nids)
-						{
+					for (int nid : nids)
+					{
 						TPdNode& node = PdMeshCore().Node(nid);
 						const vector<TBoundaryPrescribedMotion>& BPMs = node.BoundaryPreMotion();
 						for (const TBoundaryPrescribedMotion& bpm : BPMs)
 						{
 							int curid = bpm.Lcid();
 							double value = 0;
+							double value_last = 0;
 							if (CurveExist(curid))
 							{
 								TCurve& curve = Curve(curid);
-								value = curve.GetValueByX(cur_time) * bpm.Sf();
+								value = curve.GetValueByX(tt * m_time_step) * bpm.Sf();
+								value_last = curve.GetValueByX((tt - 1) * m_time_step) * bpm.Sf();
 							}
 							else
 							{
 								value = bpm.Sf();
+								value_last = bpm.Sf();
 							}
-							
-							switch (bpm.Dof())
+							switch (bpm.Vda())
 							{
-							//	DOF=1 -> X translation
-							case 1:
-							{
-								switch (bpm.Vda())
-								{
-									//	VDA = 0 -> VELOCITY
+								//	VDA = 0 -> VELOCITY
 								case 0:
 								{
-									m_pd_meshcore.Node(nid).Displacement().x() = value * cur_time;
+									m_pd_meshcore.Node(nid).IncrementalDisplacement()(bpm.Dof()-1) = m_pd_meshcore.Node(nid).IteratorDisplacement()(bpm.Dof()-1) = ((value + value_last) / 2.0) * m_time_step;
 									break;
 								}
 								//	VDA = 1 -> ACCELERATION
 								case 1:
 								{
-									m_pd_meshcore.Node(nid).Displacement().x() = 0.5 * value * cur_time * cur_time;
+									m_pd_meshcore.Node(nid).IncrementalDisplacement()(bpm.Dof()-1) = m_pd_meshcore.Node(nid).IteratorDisplacement()(bpm.Dof()-1) = 0.5 * ((value + value_last) / 2.0) * m_time_step * m_time_step;
+									break;
 								}
 								//	VDA = 2 -> DISPLACEMENT
 								case 2:
 								{
-									m_pd_meshcore.Node(nid).Displacement().x() = value;
+									m_pd_meshcore.Node(nid).IncrementalDisplacement()(bpm.Dof()-1) = m_pd_meshcore.Node(nid).IteratorDisplacement()(bpm.Dof()-1) = value - value_last;
+									break;
 								}
 								default:
+								{
 									break;
 								}
-								break;
-							}
-							//	DOF=2 -> Y translation
-							case 2:
-							{
-								switch (bpm.Vda())
-								{
-								case 0:
-								{
-									m_pd_meshcore.Node(nid).Displacement().y() = value * cur_time;
-									break;
-								}
-								case 1:
-								{
-									m_pd_meshcore.Node(nid).Displacement().y() = 0.5 * value * cur_time * cur_time;
-								}
-								case 2:
-								{
-									m_pd_meshcore.Node(nid).Displacement().y() = value;
-								}
-								default:
-									break;
-								}
-								break;
-							}
-							//	DOF=3 -> Z translation
-							case 3:
-							{
-								switch (bpm.Vda())
-								{
-								case 0:
-								{
-									m_pd_meshcore.Node(nid).Displacement().z() = value * cur_time;
-									break;
-								}
-								case 1:
-								{
-									m_pd_meshcore.Node(nid).Acceleration().z() = 0.5 * value * cur_time * cur_time;
-								}
-								case 2:
-								{
-									m_pd_meshcore.Node(nid).Displacement().z() = value;
-								}
-								default:
-									break;
-								}
-								break;
-							}
-							default:
-								break;
 							}
 						}
 					}

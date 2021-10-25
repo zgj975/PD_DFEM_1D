@@ -75,7 +75,7 @@ namespace DLUT
 					m_local_coord_system = bond_local_coor_sys;
 					m_IP.clear();
 					m_IP.resize(IP_COUNT_1D);
-					m_micro_potential_density = 0;
+					m_micro_potential_density_current = 0;
 					m_b_is_valid = true;
 				}
 			public:
@@ -94,12 +94,15 @@ namespace DLUT
 				TBondIntegrationPoint&			IP(int index) { return m_IP[index]; }
 				const TBondIntegrationPoint&	IP(int index) const { return m_IP[index]; }
 			public:
-				double						MicroPotentialDensity() const { return m_micro_potential_density; }
-				double&						MicroPotentialDensity() { return m_micro_potential_density; }
+				double						MicroPotentialDensityCurrent() const { return m_micro_potential_density_current; }
+				double&						MicroPotentialDensityCurrent() { return m_micro_potential_density_current; }
+				double						MicroPotentialDensityLastStep() const { return m_micro_potential_density_laststep; }
+				double&						MicroPotentialDensityLastStep() { return m_micro_potential_density_laststep; }
 				bool						IsValid() const { return m_b_is_valid; }
 				void						Failured() { m_b_is_valid = false; }
 			private:
-				double						m_micro_potential_density;
+				double						m_micro_potential_density_current;
+				double						m_micro_potential_density_laststep;
 				bool						m_b_is_valid;
 			private:
 				Matrix3d					m_local_coord_system;	//	Local coordinate system of the bond

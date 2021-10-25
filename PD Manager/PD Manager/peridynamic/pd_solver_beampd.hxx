@@ -615,8 +615,7 @@ namespace DLUT
 											TStrain delta_strain_local = (BL + BN_star) * delta_u_local;
 											TStress delta_stress_local = D_PD * delta_strain_local;
 										
-											bond.MicroPotentialDensity() += ((bond.IP(js).StressCurrent() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
-
+											bond.MicroPotentialDensityCurrent() += ((bond.IP(js).StressLaststep() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
 											bond.IP(js).StrainCurrent() += delta_strain_local;
 											bond.IP(js).StressCurrent() += delta_stress_local;
 										}
@@ -687,7 +686,6 @@ namespace DLUT
 						}
 					}
 				}
-				
 				void				updateInfoAfterConvergencePD()
 				{
 					TPdModel& pdModel = *m_pPdModel;
@@ -739,33 +737,9 @@ namespace DLUT
 										}
 
 										//	更新bond积分点处微势能、应变、应力等信息
-										{
-											double L = bond.BondLength();
-
-											MatrixXd delta_u_global;
-											delta_u_global.resize(12, 1);
-											delta_u_global.block(0, 0, 6, 1) = Xi.IncrementalDisplacement();
-											delta_u_global.block(6, 0, 6, 1) = Xj.IncrementalDisplacement();
-
-											MatrixXd T;
-											T.resize(12, 12);
-											T.setZero();
-											T.block(0, 0, 3, 3) = bond.LocalCoorSystem();
-											T.block(3, 3, 3, 3) = bond.LocalCoorSystem();
-											T.block(6, 6, 3, 3) = bond.LocalCoorSystem();
-											T.block(9, 9, 3, 3) = bond.LocalCoorSystem();
-
-											MatrixXd delta_u_local = T * delta_u_global;
+										{											
 											for (int js = 0; js < IP_COUNT_1D; ++js)
-											{
-												Eigen::MatrixXd BL = BL_Matrix(L, S_IP_1D[js]);
-												Eigen::MatrixXd BN_star = BN_star_Matrix(L, S_IP_1D[js], delta_u_local);
-
-												TStrain delta_strain_local = (BL + BN_star) * delta_u_local;
-												TStress delta_stress_local = D_PD * delta_strain_local;
-
-												bond.MicroPotentialDensity() += ((bond.IP(js).StressLaststep() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
-
+											{										
 												bond.IP(js).StrainLaststep() = bond.IP(js).StrainCurrent();
 												bond.IP(js).StressLaststep() = bond.IP(js).StressCurrent();
 											}
@@ -950,7 +924,7 @@ namespace DLUT
 									int nCountBondFractured = 0;
 									for (TPdBond& bond : bonds)
 									{
-										if (bond.MicroPotentialDensity() > sed_criterion)
+										if (bond.MicroPotentialDensityCurrent() > sed_criterion)
 										{
 											nCountBondFractured++;
 										}

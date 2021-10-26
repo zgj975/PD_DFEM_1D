@@ -254,7 +254,7 @@ namespace DLUT
 
 								TBoundaryPrescribedMotion bpm;
 								bpm.Dof() = ParseString<int>(line.substr(10, 10));
-								bpm.Vda() = ParseString<int>(line.substr(20, 10));
+								bpm.Vad() = ParseString<int>(line.substr(20, 10));
 								bpm.Lcid() = ParseString<int>(line.substr(30, 10));
 								bpm.Sf() = ParseString<double>(line.substr(40, 10));
 								bpm.MotionType() = "NODE";

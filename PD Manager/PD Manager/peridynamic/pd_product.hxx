@@ -169,7 +169,7 @@ namespace DLUT
 					solver.Attach(m_pd_model);
 					
 					cout << "************************************************************************" << endl;
-					for (int cur_step = 1; cur_step <= m_load_step; ++cur_step)
+					for (int cur_step = 0; cur_step <= m_load_step; ++cur_step)
 					{
 						double cur_step_start = clock();
 

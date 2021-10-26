@@ -94,24 +94,24 @@ namespace DLUT
 				TBoundaryPrescribedMotion() { /*Do nothing*/ }
 				~TBoundaryPrescribedMotion() { /*Do nothing*/ }
 			public:
-				int& Lcid() { return m_lcid; }
+				int&		Lcid() { return m_lcid; }
 				int			Lcid() const { return m_lcid; }
 
-				int& Dof() { return m_dof; }
+				int&		Dof() { return m_dof; }
 				int			Dof() const { return m_dof; }
 
-				double& Sf() { return m_sf; }
+				double&		Sf() { return m_sf; }
 				double		Sf() const { return m_sf; }
 
-				int& Vda() { return m_vda; }
-				int			Vda() const { return m_vda; }
+				int&		Vad() { return m_vad; }
+				int			Vad() const { return m_vad; }
 
-				string& MotionType() { return motion_type; }
-				const string& MotionType() const { return motion_type; }
+				string&			MotionType() { return motion_type; }
+				const string&	MotionType() const { return motion_type; }
 			private:
 				int			m_lcid;
 				int			m_dof;
-				int			m_vda;
+				int			m_vad;
 				double		m_sf;
 				string		motion_type;
 			};

@@ -779,7 +779,7 @@ namespace DLUT
 								value = bpm.Sf();
 								value_last = bpm.Sf();
 							}
-							switch (bpm.Vda())
+							switch (bpm.Vad())
 							{
 								//	VDA = 0 -> VELOCITY
 								case 0:

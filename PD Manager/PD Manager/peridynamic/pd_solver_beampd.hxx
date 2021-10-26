@@ -41,7 +41,7 @@ namespace DLUT
 				/************************************************************************/
 				/* 隐式求解 F=Kd 平衡方程                                               */
 				/************************************************************************/
-				bool				ImplicitSolve(int current_step, int total_step, int& ITERATOR_NUMS, int delta_step = 1)
+				bool				ImplicitSolve(double current_step, double total_step, int& ITERATOR_NUMS, double delta_step = 1.0)
 				{
 					TPdModel& pdModel = *m_pPdModel;
 
@@ -80,7 +80,6 @@ namespace DLUT
 					vector<double> P;
 					P.clear();
 					P.resize(DOF * nCount, 0);
-
 					for (int nid : nids)
 					{
 						const TPdNode& node = pdModel.PdMeshCore().Node(nid);
@@ -126,7 +125,7 @@ namespace DLUT
 							}
 						}
 						/************************************************************************/
-						/* F=P-R                                          */
+						/* F=P-R																*/
 						/************************************************************************/
 						vector<double> FORCE;
 						FORCE.clear();
@@ -179,14 +178,14 @@ namespace DLUT
 								int curid = bpm.Lcid();
 								TCurve& curve = pdModel.Curve(curid);
 								// 只对位移边界条件进行处理
-								if (bpm.Vda() == 2)
+								if (bpm.Vad() == 2)
 								{
 									if (ITERATOR_NUMS == 0)
 									{
 										//	按照曲线进行增量位移的计算
 										double b_current = curve.GetValueByX((double)current_step / (double)total_step) * bpm.Sf();
-										double b_last = curve.GetValueByX((double)(current_step - delta_step) / (double)(total_step)) * bpm.Sf();
-										double b = b_current - b_last;
+										double b_end = curve.GetValueByX((double)(current_step + delta_step) / (double)(total_step)) * bpm.Sf();
+										double b = b_end - b_current;
 
 										int k = DOF * nid + (bpm.Dof() - 1);
 										double Krr = m_GK[k][k];
@@ -564,7 +563,6 @@ namespace DLUT
 								Eigen::MatrixXd N = N_SF_BEAM(L, S_IP_1D[is]);
 								//	通过TN将局部坐标系下的节点迭代步总量更新至全局坐标系下
 								element.IP(is).IteratorDisplacement() = TN.transpose() * N * delta_u_local;
-								element.IP(is).IncrementalDisplacement() += element.IP(is).IteratorDisplacement();
 							}
 						});
 
@@ -616,6 +614,7 @@ namespace DLUT
 											TStress delta_stress_local = D_PD * delta_strain_local;
 										
 											bond.MicroPotentialDensityCurrent() += ((bond.IP(js).StressLaststep() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
+
 											bond.IP(js).StrainCurrent() += delta_strain_local;
 											bond.IP(js).StressCurrent() += delta_stress_local;
 										}
@@ -686,6 +685,103 @@ namespace DLUT
 						}
 					}
 				}
+				void				calMicroPotentialDensityOfBond()
+				{
+					TPdModel& pdModel = *m_pPdModel;
+					set<int> eids = pdModel.PdMeshCore().GetElementIdsByAll();
+					//	更新非连续伽辽金单元积分点处的位移增量信息
+					parallel_for_each(eids.begin(), eids.end(), [&](int eid)
+						{
+							TPdElement& element = pdModel.PdMeshCore().Element(eid);
+							int nid1 = element.NodeId(0);
+							int nid2 = element.NodeId(1);
+							const TPdNode& node1 = pdModel.PdMeshCore().Node(nid1);
+							const TPdNode& node2 = pdModel.PdMeshCore().Node(nid2);
+							MatrixXd delta_u_global;
+							delta_u_global.resize(12, 1);
+							delta_u_global.block(0, 0, 6, 1) = node1.IncrementalDisplacement();
+							delta_u_global.block(6, 0, 6, 1) = node2.IncrementalDisplacement();
+
+							MatrixXd TE;
+							TE.resize(12, 12);
+							TE.setZero();
+							TE.block(0, 0, 3, 3) = element.LocalCoorSystem();
+							TE.block(3, 3, 3, 3) = element.LocalCoorSystem();
+							TE.block(6, 6, 3, 3) = element.LocalCoorSystem();
+							TE.block(9, 9, 3, 3) = element.LocalCoorSystem();
+
+							MatrixXd TN;
+							TN.resize(6, 6);
+							TN.setZero();
+							TN.block(0, 0, 3, 3) = element.LocalCoorSystem();
+							TN.block(3, 3, 3, 3) = element.LocalCoorSystem();
+
+							MatrixXd delta_u_local = TE * delta_u_global;
+
+							double L = element.SideLength();
+							//	更新单元积分点处的位移增量（全局坐标系）
+							for (int is = 0; is < IP_COUNT_1D; ++is)
+							{
+								Eigen::MatrixXd N = N_SF_BEAM(L, S_IP_1D[is]);
+								//	通过TN将局部坐标系下的节点迭代步总量更新至全局坐标系下
+								element.IP(is).IncrementalDisplacement() = TN.transpose() * N * delta_u_local;
+							}
+						});
+
+					//	计算bond积分点处的应变和应力
+					parallel_for_each(eids.begin(), eids.end(), [&](int ei)
+						{
+							TPdElement& element_i = pdModel.PdMeshCore().Element(ei);
+							//	对纯FEM区，不计算bond的相关信息
+							if (element_i.AnalysisElementType() != FEM_ELEMENT)
+							{
+								double alpha_i = element_i.Alpha();
+								const Eigen::Matrix4d& D_PD = element_i.CalParas().D_PD;
+								LIST_NJ_FAMILY_ELEMENT& familyElements = element_i.FamilyElements();
+								for (TPdFamilyElement& family_elem : familyElements)
+								{
+									const TPdElement& element_j = pdModel.PdMeshCore().Element(family_elem.Id());
+									double alpha_j = element_j.Alpha();
+									double alpha = (alpha_i + alpha_j) / 2.0;
+									double volume_scale = family_elem.VolumeIndex();
+
+									vector<TPdBond>& bonds = family_elem.Bonds();
+									for (TPdBond& bond : bonds)
+									{
+										const TBondPoint& Xi = bond.Xi();
+										const TBondPoint& Xj = bond.Xj();
+
+										double L = bond.BondLength();
+
+										MatrixXd delta_u_global;
+										delta_u_global.resize(12, 1);
+										delta_u_global.block(0, 0, 6, 1) = Xi.IncrementalDisplacement();
+										delta_u_global.block(6, 0, 6, 1) = Xj.IncrementalDisplacement();
+
+										MatrixXd T;
+										T.resize(12, 12);
+										T.setZero();
+										T.block(0, 0, 3, 3) = bond.LocalCoorSystem();
+										T.block(3, 3, 3, 3) = bond.LocalCoorSystem();
+										T.block(6, 6, 3, 3) = bond.LocalCoorSystem();
+										T.block(9, 9, 3, 3) = bond.LocalCoorSystem();
+
+										MatrixXd delta_u_local = T * delta_u_global;
+										for (int js = 0; js < IP_COUNT_1D; ++js)
+										{
+											Eigen::MatrixXd BL = BL_Matrix(L, S_IP_1D[js]);
+											Eigen::MatrixXd BN_star = BN_star_Matrix(L, S_IP_1D[js], delta_u_local);
+
+											TStrain delta_strain_local = (BL + BN_star) * delta_u_local;
+											TStress delta_stress_local = D_PD * delta_strain_local;
+
+											bond.MicroPotentialDensityCurrent() = bond.MicroPotentialDensityLastStep() + ((bond.IP(js).StressLaststep() + delta_stress_local * 0.5).transpose() * delta_strain_local)(0, 0) * H_IP_1D[js];
+										}
+									}
+								}
+							}
+						});
+				}
 				void				updateInfoAfterConvergencePD()
 				{
 					TPdModel& pdModel = *m_pPdModel;
@@ -738,6 +834,7 @@ namespace DLUT
 
 										//	更新bond积分点处微势能、应变、应力等信息
 										{											
+											bond.MicroPotentialDensityLastStep() = bond.MicroPotentialDensityCurrent();
 											for (int js = 0; js < IP_COUNT_1D; ++js)
 											{										
 												bond.IP(js).StrainLaststep() = bond.IP(js).StrainCurrent();

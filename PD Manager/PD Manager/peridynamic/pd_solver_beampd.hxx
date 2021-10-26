@@ -727,7 +727,7 @@ namespace DLUT
 								element.IP(is).IncrementalDisplacement() = TN.transpose() * N * delta_u_local;
 							}
 						});
-
+					int xxx = 0;
 					//	计算bond积分点处的应变和应力
 					parallel_for_each(eids.begin(), eids.end(), [&](int ei)
 						{
@@ -872,80 +872,6 @@ namespace DLUT
 								element.IP(is).Coordinate() = N * coord;
 							}
 						});
-				}
-			private: 
-				void				calPdForces()
-				{
-					TPdModel& pdModel = *m_pPdModel;
-					/************************************************************************/
-					/* 每一步都需要将内力置零初始化                                         */
-					/************************************************************************/
-					const set<int> nids = pdModel.PdMeshCore().GetNodeIdsByAll();
-					parallel_for_each(nids.begin(), nids.end(), [&](int ni)
-						{
-							TPdNode& node = pdModel.PdMeshCore().Node(ni);
-							node.InnerForce().setZero();
-						});
-
-					/************************************************************************/
-					/* 计算单元I与单元J之间的力向量 24*1 矩阵                              */
-					/************************************************************************/
-					const set<int> eids = pdModel.PdMeshCore().GetElementIdsByAll();
-					parallel_for_each(eids.begin(), eids.end(), [&](int ei)
-						{
-							TPdElement& element_i = pdModel.PdMeshCore().Element(ei);
-
-							LIST_NJ_FAMILY_ELEMENT& familyElements = element_i.FamilyElements();
-							for (TPdFamilyElement& family_elem : familyElements)
-							{
-								TPdElement& element_j = pdModel.PdMeshCore().Element(family_elem.Id());
-						
-								//	将单元I和单元J对应的节点放入一个nids，长度为4
-								vector<int> nids = element_i.NodeIds();
-								for (int nj : element_j.NodeIds())
-								{
-									nids.push_back(nj);
-								}
-								const MATRIX_SINGLE_STIFFNESS_PD& SK = family_elem.SK();
-
-								VectorXd DIS;
-								DIS.resize(24);
-								DIS.setZero();
-								int loop_Dis = 0;
-								for (int nid : nids)
-								{
-									DIS.block(6 * loop_Dis++, 0, 6, 1) = pdModel.PdMeshCore().Node(nid).TotalDisplacement();
-								}
-
-								family_elem.ForceOfBond() = SK * DIS;
-							}
-						});
-
-					/************************************************************************/
-					/* 将所有的力向量累加到单元节点上去                                     */
-					/************************************************************************/
-					for (int ei : eids)
-					{
-						TPdElement& element_i = pdModel.PdMeshCore().Element(ei);						
-						LIST_NJ_FAMILY_ELEMENT& familyElements = element_i.FamilyElements();
-						for (TPdFamilyElement& family_elem : familyElements)
-						{
-							TPdElement& element_j = pdModel.PdMeshCore().Element(family_elem.Id());
-							//	将单元I和单元J对应的节点放入一个nids，长度为4
-							vector<int> nids = element_i.NodeIds();
-							for (int nj : element_j.NodeIds())
-							{
-								nids.push_back(nj);
-							}
-							const MATRIX_PD_FORCE_PD& FORCE = family_elem.ForceOfBond();
-							
-							int loop_force = 0;
-							for (int ni : nids)
-							{
-								pdModel.PdMeshCore().Node(ni).InnerForce() += FORCE.block(6 * loop_force++, 0, 6, 1);
-							}
-						}
-					}
 				}
 			private:
 				Eigen::Matrix<double, 12, 24> Tb_Tet_Nij_TE(const TPdElement& element_i, const TPdElement& element_j, const TPdBond& bond)
